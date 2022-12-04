@@ -1,56 +1,31 @@
 package ru.netology.web;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.chrome.ChromeDriver;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.openqa.selenium.WebDriver;
+import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class AppForDebitCardTest {
-
-    private WebDriver driver;
-
-
-    @BeforeAll
-    public static void BeforeAll() {
-        System.setProperty("webdriver.chrome.driver", "driver/win/chromedriver.exe");
-        //WebDriverManager.chromedriver().setup();
-    }
-
-    @BeforeEach
-    public void BeforeEach() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
-
-    }
-
-    @AfterEach
-    public void afterEach() {
-        driver.quit();
-        driver = null;
+class DebitCardApplication {
+    @Test
+    void shouldSubmitRequest() {
+        open("http://localhost:9999");
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=name] input").setValue("Васильев Василий");
+        form.$("[data-test-id=phone] input").setValue("+79270000000");
+        form.$("[data-test-id=agreement]").click();
+        form.$(".button").click();
+        $(".Success_successBlock__2L3Cw").shouldHave(exactText("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время."));
     }
 
     @Test
-    public void test() {
-        driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[type= \"text\"]")).sendKeys("Иванов Сергей");
-        driver.findElement(By.cssSelector("[type= \"tel\"]")).sendKeys("+79562222959");
-        driver.findElement(By.className("checkbox__box")).click();
-        driver.findElement(By.className("button__text")).click();
-        String text = driver.findElement(By.className("paragraph")).getText();
-        assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", text.trim());
+    void shouldvalidated() {
+        open("http://localhost:9999");
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=name] input").setValue("Иванов Иван");
+        form.$("[data-test-id=agreement]").click();
+        form.$(".button").click();
+        $(".input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
-
-
 }
-
