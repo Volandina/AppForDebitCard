@@ -43,7 +43,7 @@ public class AppForDebitCardTest {
     @Test
     public void test() {
         driver.get("http://localhost:9999");
-        driver.findElement(By.cssSelector("[type= \"text\"]")).sendKeys("Кравцов Сергей");
+        driver.findElement(By.cssSelector("[type= \"text\"]")).sendKeys("Иванов Сергей");
         driver.findElement(By.cssSelector("[type= \"tel\"]")).sendKeys("+79562222959");
         driver.findElement(By.className("checkbox__box")).click();
         driver.findElement(By.className("button__text")).click();
